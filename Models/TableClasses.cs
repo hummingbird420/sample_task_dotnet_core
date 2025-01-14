@@ -1,5 +1,4 @@
 ﻿using SampleTaskApp.Validators;
-using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
@@ -7,9 +6,7 @@ public class UserInfo
 {
     [Key]
     public int Id { get; set; }
-
-    [Required, MaxLength(100)]
-    public string Name { get; set; }
+    
 
     [Required, MaxLength(50)]
     public string UserName { get; set; }
@@ -30,15 +27,28 @@ public class UserInfo
     [ForeignKey("PatientId")]
     public Patients Patient { get; set; }
 }
+public class SystemPageAndAction
+{
+    [Key]
+    public int PageId { get; set; }
+    [Required, MaxLength(50)]
+    public string PageName { get; set; }
+    [Required, MaxLength(50)]
+    public string ControllerName { get; set; }
+    [Required, MaxLength(50)]    
+    public string PageUrl { get; set; }
+
+}
 public class UserPermission
 {
     [Key]
     public int PermissionId { get; set; }
     public int PageId { get; set; }
     [Required, MaxLength(50)]
-    public string ControllerName { get; set; }
-    [Required, MaxLength(10)]
-    public string MethodName { get; set; }
+    public bool IsRetrieve { get; set; }
+    public bool IsCreate { get; set; }
+    public bool IsEdit { get; set; }
+    public bool IsDelete { get; set; }
     public int? UserId { get; set; }
     // Relationships
     [ForeignKey("UserId")]

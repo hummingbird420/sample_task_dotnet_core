@@ -63,7 +63,7 @@ namespace SampleTaskApp.Controllers.Authorised
                 {
                     Type = 5,
                     Status = StatusCodes.Status500InternalServerError, // Return appropriate status codes for errors
-                    Message = "An error occurred while fetching hospital data."
+                    Message = "An error occurred while fetching doctor data."
                 });
             }
             
@@ -91,28 +91,10 @@ namespace SampleTaskApp.Controllers.Authorised
                 {
                     Type = 5,
                     Status = StatusCodes.Status500InternalServerError, // Return appropriate status codes for errors
-                    Message = "An error occurred while fetching hospital data."
+                    Message = "An error occurred while fetching doctor data."
                 });
             }
-            _context.Entry(doctors).State = EntityState.Modified;
-
-            try
-            {
-                await _context.SaveChangesAsync();
-            }
-            catch (DbUpdateConcurrencyException)
-            {
-                if (!DoctorsExists(id))
-                {
-                    return NotFound();
-                }
-                else
-                {
-                    throw;
-                }
-            }
-
-            return NoContent();
+            
         }
 
         // POST: api/EfDoctors
@@ -120,31 +102,53 @@ namespace SampleTaskApp.Controllers.Authorised
         [HttpPost]
         public async Task<ActionResult<Doctors>> PostDoctors(Doctors doctors)
         {
-            _context.Doctors.Add(doctors);
-            await _context.SaveChangesAsync();
+            try
+            {
+                await _unitOfWork.EfDoctorsRepository.AddAsync(doctors);
+                await _unitOfWork.CompleteAsync();
+                var rType = new CommonOperation { Type = 1, Status = StatusCodes.Status200OK };
+                return Ok(rType);
+            }
+            catch (Exception)
+            {
 
-            return CreatedAtAction("GetDoctors", new { id = doctors.DoctorId }, doctors);
+                return Ok(new CommonOperation
+                {
+                    Type = 5,
+                    Status = StatusCodes.Status500InternalServerError, // Return appropriate status codes for errors
+                    Message = "An error occurred while fetching doctor data."
+                });
+            }
+            
         }
 
         // DELETE: api/EfDoctors/5
         [HttpDelete("{id}")]
         public async Task<IActionResult> DeleteDoctors(int id)
         {
-            var doctors = await _context.Doctors.FindAsync(id);
-            if (doctors == null)
+            try
             {
-                return NotFound();
+                await _unitOfWork.EfDoctorsRepository.DeleteAsync(id);
+                await _unitOfWork.CompleteAsync();
+                var rType = new CommonOperation { Type = 3, Status = StatusCodes.Status200OK };
+                return Ok(rType);
             }
+            catch (Exception)
+            {
 
-            _context.Doctors.Remove(doctors);
-            await _context.SaveChangesAsync();
-
-            return NoContent();
+                return Ok(new CommonOperation
+                {
+                    Type = 5,
+                    Status = StatusCodes.Status500InternalServerError, // Return appropriate status codes for errors
+                    Message = "An error occurred while fetching doctor data."
+                });
+            }
+            
         }
 
-        private bool DoctorsExists(int id)
+        private async Task<bool> DoctorsExists(int id)
         {
-            return _context.Doctors.Any(e => e.DoctorId == id);
+            return await _unitOfWork.EfDoctorsRepository.CheckByIdAsync(w=> w.DoctorId==id); 
         }
     }
 }

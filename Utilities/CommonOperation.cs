@@ -4,6 +4,7 @@
     {
         public string Message { get; set; }
         public dynamic Data { get; set; }
+        public int Total { get; set; }
         public int Type { get; set; }
         public int Status { get; set; }
 
@@ -11,6 +12,7 @@
         {
             Message = string.Empty;
             Data = (dynamic)null;
+            Total = (dynamic)null;
             Type = 0;
             Status = 200;
         }

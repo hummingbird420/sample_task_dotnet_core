@@ -1,6 +1,7 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using SampleTaskApp.IRepositories;
 using SampleTaskApp.Models;
+using System.Linq.Expressions;
 
 namespace SampleTaskApp.Repositories
 {
@@ -43,6 +44,9 @@ namespace SampleTaskApp.Repositories
         }
 
 
-
+        public async Task<bool> CheckByIdAsync(Expression<Func<T, bool>> exp)
+        {
+            return await _context.Set<T>().AnyAsync(exp);
+        }
     }
 }

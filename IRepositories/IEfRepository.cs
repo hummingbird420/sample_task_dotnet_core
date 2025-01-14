@@ -1,4 +1,5 @@
 ﻿using SampleTaskApp.Models;
+using System.Linq.Expressions;
 
 namespace SampleTaskApp.IRepositories
 {
@@ -9,6 +10,6 @@ namespace SampleTaskApp.IRepositories
         Task AddAsync(T entity);
         Task UpdateAsync(T entity);
         Task DeleteAsync(int id);
-       
+        Task<bool> CheckByIdAsync(Expression<Func<T, bool>> exp);
     }
 }

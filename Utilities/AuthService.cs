@@ -17,8 +17,7 @@ namespace SampleTaskApp.Utilities
         public string GenerateJwtToken(UserInfo Data)
         {
             var claims = new[]
-            {
-            new Claim(ClaimTypes.Name, Data.Name),
+            {            
             new Claim("UserId", Data.Id.ToString()),
             new Claim(ClaimTypes.UserData, Data.UserName),
             // Add more claims if necessary

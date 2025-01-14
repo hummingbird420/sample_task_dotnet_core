@@ -1,6 +1,5 @@
 ﻿using Microsoft.EntityFrameworkCore;
-using System.Collections.Generic;
-using System.Reflection.Emit;
+
 
 namespace SampleTaskApp.Models
 {
@@ -12,6 +11,7 @@ namespace SampleTaskApp.Models
 
         // DbSets for your entities
         public DbSet<UserInfo> UserInfos { get; set; }
+        public DbSet<SystemPageAndAction> SystemPageAndActions { get; set; }
         public DbSet<UserPermission> UserPermissions { get; set; }
         
         public DbSet<Doctors> Doctors { get; set; }

@@ -13,15 +13,34 @@ namespace SampleTaskApp.Repositories
             _context = context;
         }
 
-        public async Task<bool> HasPermissionForActionAsync(int userId, string conrollerName, string actionName, string methodName)
+        public async Task<bool> HasPermissionForActionAsync(int userId, string controllerName, string actionName, string methodName)
         {
-            // Fetch user permissions from the database (example)
-            var userPermissions = await _context.UserPermissions
-                .Where(p => p.UserId == userId && p.ControllerName==conrollerName && p.MethodName==methodName)
-                .ToListAsync();
+            // Determine the required permissions based on the HTTP method
+            bool isRetrieve = methodName.ToUpper() == "GET";
+            bool isCreate = methodName.ToUpper() == "POST";
+            bool isEdit = methodName.ToUpper() == "PUT";
+            bool isDelete = methodName.ToUpper() == "DELETE";
 
-            // Check if the user has permission for the specific action
-            return userPermissions.Count > 0;
+            // Fetch user permissions from the database
+            var hasPermission = await (from u in _context.UserInfos
+                                       join p in _context.UserPermissions
+                                       on u.Id equals p.UserId into up
+                                       from p in up.DefaultIfEmpty()
+                                       join s in _context.SystemPageAndActions
+                                       on p.PageId equals s.PageId into sp
+                                       from s in sp.DefaultIfEmpty()
+                                       where u.Role == "Admin" ||
+                                             (u.Id == userId &&
+                                              s.ControllerName == controllerName &&
+                                              ((isRetrieve && p.IsRetrieve) ||
+                                               (isCreate && p.IsCreate) ||
+                                               (isEdit && p.IsEdit) ||
+                                               (isDelete && p.IsDelete)))
+                                       select u.Id)
+                                       .AnyAsync(); // Use AnyAsync for better performance when checking existence
+
+            return hasPermission;
         }
+
     }
 }

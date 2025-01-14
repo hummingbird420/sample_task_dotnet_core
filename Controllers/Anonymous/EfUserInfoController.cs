@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Http;
+﻿using Dapper;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using SampleTaskApp.UnitOfWork;
 using SampleTaskApp.Utilities;
@@ -20,59 +21,99 @@ namespace SampleTaskApp.Controllers.Anonymous
         [HttpGet]
         public async Task<IActionResult> GetUserInfo()
         {
-            var userInfo = await _unitOfWork.EfUserInfoRepository.GetAllAsync();
-            return Ok(userInfo);
+            try
+            {
+                var data = await _unitOfWork.EfUserInfoRepository.GetAllAsync();
+                var rType = new CommonOperation { Type = 6, Data = data,Total = data.Count(), Status = StatusCodes.Status200OK };
+                return Ok(rType);
+            }
+            catch (Exception)
+            {
+
+                return Ok(new CommonOperation
+                {
+                    Type = 5,
+                    Status = StatusCodes.Status500InternalServerError, // Return appropriate status codes for errors
+                    Message = "An error occurred while fetching users data."
+                });
+            }
+
+           
         }
         // GET: rk/api/userinfo/5
         [HttpGet("{id}")]
         public async Task<ActionResult<Hospitals>> GetUserInfo(int id)
         {
-            var userInfo = await _unitOfWork.EfUserInfoRepository.GetByIdAsync(id);
-
-            if (userInfo == null)
+            try
             {
-                return NotFound();
+                var data = await _unitOfWork.EfUserInfoRepository.GetByIdAsync(id);
+                var rType = new CommonOperation { Type = 6, Data = data, Status = StatusCodes.Status200OK };
+                return Ok(rType);
             }
+            catch (Exception)
+            {
 
-            return Ok(userInfo);
+                return Ok(new CommonOperation
+                {
+                    Type = 5,
+                    Status = StatusCodes.Status500InternalServerError, // Return appropriate status codes for errors
+                    Message = "An error occurred while fetching users data."
+                });
+            }
+            
         }
         // POST:rk/api/userinfo
         [HttpPost]
         public async Task<IActionResult> CreateUserInfo([FromBody] UserInfo userInfo)
         {
-            await _unitOfWork.EfUserInfoRepository.AddAsync(userInfo);
-            await _unitOfWork.CompleteAsync();
-            return CreatedAtAction(nameof(GetUserInfo), new { id = userInfo.Id }, userInfo);
-        }
-
-        // PUT: rk/api/userinfo/{id}
-        [HttpPut("{id}")]
-        public async Task<IActionResult> UpdateUserInfo(int id, [FromBody] UserInfo userInfo)
-        {
-            var existingUserInfo = await _unitOfWork.EfUserInfoRepository.GetByIdAsync(id);
-            if (existingUserInfo == null)
+           
+            try
             {
-                return NotFound();
+                await _unitOfWork.EfUserInfoRepository.AddAsync(userInfo);
+                await _unitOfWork.CompleteAsync();
+                var rType = new CommonOperation { Type = 6, Data = "", Status = StatusCodes.Status200OK };
+                return Ok(rType);
             }
+            catch (Exception)
+            {
 
-            existingUserInfo.Name = userInfo.Name;
-            existingUserInfo.UserName = userInfo.UserName;
-            existingUserInfo.Password = userInfo.Password;
-
-            await _unitOfWork.EfUserInfoRepository.UpdateAsync(existingUserInfo);
-            await _unitOfWork.CompleteAsync();
-
-            return NoContent();
+                return Ok(new CommonOperation
+                {
+                    Type = 5,
+                    Status = StatusCodes.Status500InternalServerError, // Return appropriate status codes for errors
+                    Message = "An error occurred while creating users data."
+                });
+            }
         }
 
-        // DELETE: rk/api/userinfo/{id}
-        [HttpDelete("{id}")]
-        public async Task<IActionResult> DeleteUserInfo(int id)
-        {
-            await _unitOfWork.EfUserInfoRepository.DeleteAsync(id);
-            await _unitOfWork.CompleteAsync();
-            return NoContent();
-        }
+        //// PUT: rk/api/userinfo/{id}
+        //[HttpPut("{id}")]
+        //public async Task<IActionResult> UpdateUserInfo(int id, [FromBody] UserInfo userInfo)
+        //{
+        //    var existingUserInfo = await _unitOfWork.EfUserInfoRepository.GetByIdAsync(id);
+        //    if (existingUserInfo == null)
+        //    {
+        //        return NotFound();
+        //    }
+
+            
+        //    existingUserInfo.UserName = userInfo.UserName;
+        //    existingUserInfo.Password = userInfo.Password;
+
+        //    await _unitOfWork.EfUserInfoRepository.UpdateAsync(existingUserInfo);
+        //    await _unitOfWork.CompleteAsync();
+
+        //    return NoContent();
+        //}
+
+        //// DELETE: rk/api/userinfo/{id}
+        //[HttpDelete("{id}")]
+        //public async Task<IActionResult> DeleteUserInfo(int id)
+        //{
+        //    await _unitOfWork.EfUserInfoRepository.DeleteAsync(id);
+        //    await _unitOfWork.CompleteAsync();
+        //    return NoContent();
+        //}
     }
 
 }

@@ -7,6 +7,7 @@ using Microsoft.IdentityModel.Tokens;
 using SampleTaskApp.IRepositories;
 using SampleTaskApp.Models;
 using SampleTaskApp.Repositories;
+using SampleTaskApp.SeedData;
 using SampleTaskApp.UnitOfWork;
 using SampleTaskApp.Utilities;
 using System.Data;
@@ -86,7 +87,7 @@ var app = builder.Build();
 using (var scope = app.Services.CreateScope())
 {
     var dbContext = scope.ServiceProvider.GetRequiredService<SampleTaskDbContext>();
-    dbContext.Database.EnsureCreated();  // This will create the database if it doesn't exist
+    SeedData.Initialize(scope.ServiceProvider);
 }
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())
