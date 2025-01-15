@@ -1,6 +1,7 @@
 ﻿using Dapper;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.SignalR;
 using SampleTaskApp.UnitOfWork;
 using SampleTaskApp.Utilities;
 
@@ -11,10 +12,11 @@ namespace SampleTaskApp.Controllers.Anonymous
     public class EfUserInfoController : ControllerBase
     {
         private readonly IUnitOfWork _unitOfWork;
-
-        public EfUserInfoController(IUnitOfWork unitOfWork)
+        private readonly IHubContext<NotificationHub> _hubContext;
+        public EfUserInfoController(IUnitOfWork unitOfWork, IHubContext<NotificationHub> hubContext)
         {
             _unitOfWork = unitOfWork;
+            _hubContext = hubContext;
         }
 
         // GET:rk/api/userinfo
@@ -24,6 +26,7 @@ namespace SampleTaskApp.Controllers.Anonymous
             try
             {
                 var data = await _unitOfWork.EfUserInfoRepository.GetAllAsync();
+                
                 var rType = new CommonOperation { Type = 6, Data = data,Total = data.Count(), Status = StatusCodes.Status200OK };
                 return Ok(rType);
             }
@@ -42,7 +45,7 @@ namespace SampleTaskApp.Controllers.Anonymous
         }
         // GET: rk/api/userinfo/5
         [HttpGet("{id}")]
-        public async Task<ActionResult<Hospitals>> GetUserInfo(int id)
+        public async Task<ActionResult<Hospital>> GetUserInfo(int id)
         {
             try
             {
@@ -71,7 +74,11 @@ namespace SampleTaskApp.Controllers.Anonymous
             {
                 await _unitOfWork.EfUserInfoRepository.AddAsync(userInfo);
                 await _unitOfWork.CompleteAsync();
-                var rType = new CommonOperation { Type = 6, Data = "", Status = StatusCodes.Status200OK };
+                var notification = new Notification { NotificationHeader="New user register.",NotificationBody="A new user named '"+ userInfo.UserName+"' is register.",ReturnUrl="authorised/notification"};
+                await _unitOfWork.EfNotificationsRepository.AddAsync(notification);
+                await _unitOfWork.CompleteAsync();
+                await _hubContext.Clients.Users(["2"]).SendAsync("ReceiveNotification", notification.NotificationHeader);
+                var rType = new CommonOperation { Type = 1, Data = "", Status = StatusCodes.Status200OK };
                 return Ok(rType);
             }
             catch (Exception)

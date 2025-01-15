@@ -25,7 +25,7 @@ namespace SampleTaskApp.Controllers.Authorised
 
         // GET: api/EfDoctors
         [HttpGet]
-        public async Task<ActionResult<IEnumerable<Doctors>>> GetDoctors()
+        public async Task<ActionResult<IEnumerable<Doctor>>> GetDoctors()
         {
             
             try
@@ -48,7 +48,7 @@ namespace SampleTaskApp.Controllers.Authorised
 
         // GET: api/EfDoctors/5
         [HttpGet("{id}")]
-        public async Task<ActionResult<Doctors>> GetDoctors(int id)
+        public async Task<ActionResult<Doctor>> GetDoctors(int id)
         {
             try
             {
@@ -72,7 +72,7 @@ namespace SampleTaskApp.Controllers.Authorised
         // PUT: api/EfDoctors/5
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         [HttpPut("{id}")]
-        public async Task<IActionResult> PutDoctors(int id, Doctors doctors)
+        public async Task<IActionResult> PutDoctors(int id, Doctor doctors)
         {
             if (id != doctors.DoctorId)
             {
@@ -100,7 +100,7 @@ namespace SampleTaskApp.Controllers.Authorised
         // POST: api/EfDoctors
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         [HttpPost]
-        public async Task<ActionResult<Doctors>> PostDoctors(Doctors doctors)
+        public async Task<ActionResult<Doctor>> PostDoctors(Doctor doctors)
         {
             try
             {

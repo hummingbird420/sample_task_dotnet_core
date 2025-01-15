@@ -1,5 +1,6 @@
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.SignalR;
 using Microsoft.Data.SqlClient;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
@@ -49,33 +50,46 @@ builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
 builder.Services.AddScoped<IUnitOfWork, UnitOfWork>();
 
 builder.Services.AddScoped<IEfUserInfoRepository<UserInfo>, EfUserInfoRepository>();
-builder.Services.AddScoped<IEfDoctorsRepository<Doctors>, EfDoctorsRepository>();
-builder.Services.AddScoped<IEfHospitalsRepository<Hospitals>, EfHospitalsRepository>();
-builder.Services.AddScoped<IEfBedsRepository<Beds>, EfBedsRepository>();
-builder.Services.AddScoped<IEfPatientsRepository<Patients>, EfPatientsRepository>();
-builder.Services.AddScoped<IEfBedsAlotementsRepository<BedsAlotements>, EfBedsAlotementsRepository>();
-builder.Services.AddScoped<IEfNotificationsRepository<Notifications>, EfNotificationsRepository>();
+builder.Services.AddScoped<IEfDoctorsRepository<Doctor>, EfDoctorsRepository>();
+builder.Services.AddScoped<IEfHospitalsRepository<Hospital>, EfHospitalsRepository>();
+builder.Services.AddScoped<IEfBedsRepository<Bed>, EfBedsRepository>();
+builder.Services.AddScoped<IEfPatientsRepository<Patient>, EfPatientsRepository>();
+builder.Services.AddScoped<IEfBedsAlotementsRepository<BedsAlotement>, EfBedsAlotementsRepository>();
+builder.Services.AddScoped<IEfNotificationsRepository<Notification>, EfNotificationsRepository>();
 
 builder.Services.AddScoped<IDapperUserInfoRepository<UserInfo>, DapperUserInfoRepository>();
-builder.Services.AddScoped<IDapperDoctorsRepository<Doctors>, DapperDoctorsRepository>();
-builder.Services.AddScoped<IDapperHospitalsRepository<Hospitals>, DapperHospitalsRepository>();
-builder.Services.AddScoped<IDapperBedsRepository<Beds>, DapperBedsRepository>();
-builder.Services.AddScoped<IDapperPatientsRepository<Patients>, DapperPatientsRepository>();
-builder.Services.AddScoped<IDapperBedsAlotementsRepository<BedsAlotements>, DapperBedsAlotementsRepository>();
-builder.Services.AddScoped<IDapperNotificationsRepository<Notifications>, DapperNotificationsRepository>();
+builder.Services.AddScoped<IDapperDoctorsRepository<Doctor>, DapperDoctorsRepository>();
+builder.Services.AddScoped<IDapperHospitalsRepository<Hospital>, DapperHospitalsRepository>();
+builder.Services.AddScoped<IDapperBedsRepository<Bed>, DapperBedsRepository>();
+builder.Services.AddScoped<IDapperPatientsRepository<Patient>, DapperPatientsRepository>();
+builder.Services.AddScoped<IDapperBedsAlotementsRepository<BedsAlotement>, DapperBedsAlotementsRepository>();
+builder.Services.AddScoped<IDapperNotificationsRepository<Notification>, DapperNotificationsRepository>();
 
 builder.Services.AddScoped<AuthService>();
 builder.Services.AddScoped<IUserPermissionService, EfUserPermissionService>();
 
 builder.Services.AddScoped<IAuthorizationHandler, CustomActionAuthorizationHandler>();
+
 builder.Services.AddHttpContextAccessor();
+builder.Services.AddSignalR();
+
+builder.Services.AddSingleton<IUserIdProvider, CustomUserIdProvider>();
+
 #endregion
 builder.Services.AddAuthorization(options =>
 {
     options.AddPolicy("CustomActionPolicy", policy =>
         policy.Requirements.Add(new CustomActionAuthorizationRequirement())); // Placeholder
 });
-
+builder.Services.AddCors(options =>
+{
+    options.AddPolicy("AllowSpecificOrigins", builder =>
+    {
+        builder.WithOrigins("*") // Replace with your client URL
+               .AllowAnyHeader()
+               .AllowAnyMethod();
+    });
+});
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
@@ -95,9 +109,9 @@ if (app.Environment.IsDevelopment())
     app.UseSwagger();
     app.UseSwaggerUI();
 }
-
+app.MapHub<NotificationHub>("/notificationHub");
 app.UseHttpsRedirection();
-
+app.UseCors("AllowSpecificOrigins");
 app.UseAuthentication();  // Enable Authentication Middleware
 app.UseAuthorization();   // Enable Authorization Middleware
 

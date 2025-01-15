@@ -6,7 +6,6 @@ public class UserInfo
 {
     [Key]
     public int Id { get; set; }
-    
 
     [Required, MaxLength(50)]
     public string UserName { get; set; }
@@ -17,15 +16,7 @@ public class UserInfo
 
     [Required, MaxLength(50)]
     public string Role { get; set; }
-
-    // Relationships
-    public int? DoctorId { get; set; }
-    [ForeignKey("DoctorId")]
-    public Doctors Doctor { get; set; }
-
-    public int? PatientId { get; set; }
-    [ForeignKey("PatientId")]
-    public Patients Patient { get; set; }
+   
 }
 public class SystemPageAndAction
 {
@@ -52,9 +43,9 @@ public class UserPermission
     public int? UserId { get; set; }
     // Relationships
     [ForeignKey("UserId")]
-    public UserInfo UserInfos { get; set; }
+    public UserInfo? UserInfos { get; set; }
 }
-public class Doctors
+public class Doctor
 {
     [Key]
     public int DoctorId { get; set; }
@@ -71,13 +62,17 @@ public class Doctors
     [MaxMinAge(100, 18, ErrorMessage = "Age must be between 18 and 100.")]
     [Required, MaxLength(3)]
     public string DoctorAge { get; set; }
-
+    // Relationships
     public int HospitalId { get; set; }
     [ForeignKey("HospitalId")]
-    public Hospitals Hospital { get; set; }
+    public Hospital? Hospital { get; set; }
+    public int? UserId { get; set; }
+    
+    [ForeignKey("UserId")]
+    public UserInfo? UserInfos { get; set; }
 }
 
-public class Hospitals
+public class Hospital
 {
     [Key]
     public int HospitalId { get; set; }
@@ -89,11 +84,11 @@ public class Hospitals
     public string HospitalLocation { get; set; }
 
     // Relationships
-    public ICollection<Doctors> Doctors { get; set; }
-    public ICollection<Beds> Beds { get; set; }
+    public ICollection<Doctor> Doctors { get; set; }
+    public ICollection<Bed> Beds { get; set; }
 }
 
-public class Beds
+public class Bed
 {
     [Key]
     public int BedId { get; set; }
@@ -106,13 +101,13 @@ public class Beds
 
     public int HospitalId { get; set; }
     [ForeignKey("HospitalId")]
-    public Hospitals Hospital { get; set; }
+    public Hospital Hospital { get; set; }
 
     // Relationships
-    public ICollection<BedsAlotements> BedAllotments { get; set; }
+    public ICollection<BedsAlotement> BedAllotments { get; set; }
 }
 
-public class Patients
+public class Patient
 {
     [Key]
     public int PatientId { get; set; }
@@ -131,30 +126,33 @@ public class Patients
 
     [Required, MaxLength(300)]
     public string PatientAddress { get; set; }
+    // Relationships
+    public int? UserId { get; set; }
 
-  
-  
+    [ForeignKey("UserId")]
+    public UserInfo? UserInfos { get; set; }
+
 }
 
-public class BedsAlotements
+public class BedsAlotement
 {
     [Key]
     public int AlotementId { get; set; }
 
     public int PatientId { get; set; }
     [ForeignKey("PatientId")]
-    public Patients Patient { get; set; }
+    public Patient Patient { get; set; }
 
     public int BedId { get; set; }
     [ForeignKey("BedId")]
-    public Beds Bed { get; set; }
+    public Bed Bed { get; set; }
 
     public int DoctorId { get; set; }
     [ForeignKey("DoctorId")]
-    public Doctors Doctor { get; set; }
+    public Doctor Doctor { get; set; }
 }
 
-public class Notifications
+public class Notification
 {
     [Key]
     public int NotificationId { get; set; }
@@ -167,12 +165,20 @@ public class Notifications
 
     [MaxLength(300)]
     public string ReturnUrl { get; set; }
+    
+}
 
-    public int? DoctorId { get; set; }
-    [ForeignKey("DoctorId")]
-    public Doctors Doctor { get; set; }
+public class NotificationUser
+{
+    [Key]
+    public int NotificationUserId { get; set; }
+    public bool IsSeen { get; set; }
+    // Relationships
+    public int? NotificationId { get; set; }
+    [ForeignKey("NotificationId")]
+    public Notification? Notifications { get; set; }
+    public int? UserId { get; set; }
 
-    public int? PatientId { get; set; }
-    [ForeignKey("PatientId")]
-    public Patients Patient { get; set; }
+    [ForeignKey("UserId")]
+    public UserInfo? UserInfos { get; set; }
 }

@@ -4,7 +4,7 @@ using SampleTaskApp.Models;
 
 namespace SampleTaskApp.Repositories
 {
-    public class EfNotificationsRepository : EfRepository<Notifications>, IEfNotificationsRepository<Notifications>
+    public class EfNotificationsRepository : EfRepository<Notification>, IEfNotificationsRepository<Notification>
     {
         private readonly DbContext _context;
         public EfNotificationsRepository(SampleTaskDbContext context) : base(context)

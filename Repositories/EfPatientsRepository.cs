@@ -4,7 +4,7 @@ using SampleTaskApp.Models;
 
 namespace SampleTaskApp.Repositories
 {
-    public class EfPatientsRepository : EfRepository<Patients>, IEfPatientsRepository<Patients>
+    public class EfPatientsRepository : EfRepository<Patient>, IEfPatientsRepository<Patient>
     {
         private readonly DbContext _context;
         public EfPatientsRepository(SampleTaskDbContext context) : base(context)

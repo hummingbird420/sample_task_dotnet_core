@@ -22,7 +22,7 @@ namespace SampleTaskApp.Controllers.Authorised
         // GET: rk/api/Hospitals
         [HttpGet]
         [CustomAuthorize]
-        public async Task<ActionResult<IEnumerable<Hospitals>>> GetHospitals()
+        public async Task<ActionResult<IEnumerable<Hospital>>> GetHospitals()
         {
             try
             {
@@ -44,7 +44,7 @@ namespace SampleTaskApp.Controllers.Authorised
 
         // GET: rk/api/Hospitals/5
         [HttpGet("{id}")]
-        public async Task<ActionResult<Hospitals>> GetHospitals(int id)
+        public async Task<ActionResult<Hospital>> GetHospitals(int id)
         {
             try
             {
@@ -73,7 +73,7 @@ namespace SampleTaskApp.Controllers.Authorised
         // PUT: rk/api/Hospitals/5
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         [HttpPut("{id}")]
-        public async Task<IActionResult> PutHospitals(int id, Hospitals hospitals)
+        public async Task<IActionResult> PutHospitals(int id, Hospital hospitals)
         {
             try
             {
@@ -107,7 +107,7 @@ namespace SampleTaskApp.Controllers.Authorised
         // POST: rk/api/Hospitals
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         [HttpPost]
-        public async Task<ActionResult<Hospitals>> PostHospitals(Hospitals hospitals)
+        public async Task<ActionResult<Hospital>> PostHospitals(Hospital hospitals)
         {
             try
             {

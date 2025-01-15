@@ -4,7 +4,7 @@ using System.Data.Common;
 
 namespace SampleTaskApp.Repositories
 {
-    public class DapperHospitalsRepository : DapperRepository<Hospitals>, IDapperHospitalsRepository<Hospitals>
+    public class DapperHospitalsRepository : DapperRepository<Hospital>, IDapperHospitalsRepository<Hospital>
     {
         private readonly IDbConnection _dbConnection;
         public DapperHospitalsRepository(IDbConnection dbConnection) : base(dbConnection)

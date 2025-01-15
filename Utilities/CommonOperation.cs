@@ -12,7 +12,7 @@
         {
             Message = string.Empty;
             Data = (dynamic)null;
-            Total = (dynamic)null;
+            Total =0;
             Type = 0;
             Status = 200;
         }

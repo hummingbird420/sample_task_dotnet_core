@@ -14,75 +14,41 @@ namespace SampleTaskApp.Models
         public DbSet<SystemPageAndAction> SystemPageAndActions { get; set; }
         public DbSet<UserPermission> UserPermissions { get; set; }
         
-        public DbSet<Doctors> Doctors { get; set; }
-        public DbSet<Hospitals> Hospitals { get; set; }
-        public DbSet<Beds> Beds { get; set; }
-        public DbSet<Patients> Patients { get; set; }
-        public DbSet<BedsAlotements> BedsAlotements { get; set; }
-        public DbSet<Notifications> Notifications { get; set; }
+        public DbSet<Doctor> Doctors { get; set; }
+        public DbSet<Hospital> Hospitals { get; set; }
+        public DbSet<Bed> Beds { get; set; }
+        public DbSet<Patient> Patients { get; set; }
+        public DbSet<BedsAlotement> BedsAlotements { get; set; }
+        public DbSet<Notification> Notifications { get; set; }
+        public DbSet<NotificationUser> NotificationUsers { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
-            base.OnModelCreating(modelBuilder);
+            // BedsAlotements configuration
+            modelBuilder.Entity<BedsAlotement>()
+                .HasKey(ba => ba.AlotementId);
 
-            // Relationships and constraints
-
-            modelBuilder.Entity<Doctors>()
-                .HasOne(d => d.Hospital)
-                .WithMany(h => h.Doctors)
-                .HasForeignKey(d => d.HospitalId)
-                .OnDelete(DeleteBehavior.Cascade);
-
-            modelBuilder.Entity<Beds>()
-                .HasOne(b => b.Hospital)
-                .WithMany(h => h.Beds)
-                .HasForeignKey(b => b.HospitalId)
-                .OnDelete(DeleteBehavior.Cascade);
-
-            modelBuilder.Entity<BedsAlotements>()
-                .HasOne(ba => ba.Bed)
-                .WithMany(b => b.BedAllotments)
-                .HasForeignKey(ba => ba.BedId)
-                .OnDelete(DeleteBehavior.Cascade);
-
-            // Change cascading behavior to restrict for BedsAlotements to Doctors and Patients
-            modelBuilder.Entity<BedsAlotements>()
-                .HasOne(ba => ba.Doctor)
-                .WithMany()
-                .HasForeignKey(ba => ba.DoctorId)
-                .OnDelete(DeleteBehavior.Restrict);  // or DeleteBehavior.NoAction
-
-            modelBuilder.Entity<BedsAlotements>()
+            modelBuilder.Entity<BedsAlotement>()
                 .HasOne(ba => ba.Patient)
                 .WithMany()
                 .HasForeignKey(ba => ba.PatientId)
-                .OnDelete(DeleteBehavior.Restrict);  // or DeleteBehavior.NoAction
+                .OnDelete(DeleteBehavior.Cascade); // Or Restrict if required
 
-            modelBuilder.Entity<Notifications>()
-                .HasOne(n => n.Doctor)
+            modelBuilder.Entity<BedsAlotement>()
+                .HasOne(ba => ba.Bed)
+                .WithMany(b => b.BedAllotments)
+                .HasForeignKey(ba => ba.BedId)
+                .OnDelete(DeleteBehavior.Restrict); // Prevents cascade delete here
+
+            modelBuilder.Entity<BedsAlotement>()
+                .HasOne(ba => ba.Doctor)
                 .WithMany()
-                .HasForeignKey(n => n.DoctorId)
-                .OnDelete(DeleteBehavior.Restrict);
+                .HasForeignKey(ba => ba.DoctorId)
+                .OnDelete(DeleteBehavior.Restrict); // Prevents cascade delete here
 
-            modelBuilder.Entity<Notifications>()
-                .HasOne(n => n.Patient)
-                .WithMany()
-                .HasForeignKey(n => n.PatientId)
-                .OnDelete(DeleteBehavior.Restrict);
-
-            // Indexes (optional but recommended for performance)
-            modelBuilder.Entity<UserInfo>()
-                .HasIndex(u => u.UserName)
-                .IsUnique();
-
-            modelBuilder.Entity<Doctors>()
-                .HasIndex(d => d.DoctorEmail)
-                .IsUnique();
-
-            modelBuilder.Entity<Patients>()
-                .HasIndex(p => p.PatientEmail)
-                .IsUnique();
+            base.OnModelCreating(modelBuilder);
         }
+
 
     }
 }

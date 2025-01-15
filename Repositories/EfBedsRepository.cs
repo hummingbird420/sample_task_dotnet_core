@@ -4,7 +4,7 @@ using SampleTaskApp.Models;
 
 namespace SampleTaskApp.Repositories
 {
-    public class EfBedsRepository : EfRepository<Beds>, IEfBedsRepository<Beds>
+    public class EfBedsRepository : EfRepository<Bed>, IEfBedsRepository<Bed>
     {
         private readonly DbContext _context;
         public EfBedsRepository(SampleTaskDbContext context) : base(context)

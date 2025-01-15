@@ -13,21 +13,21 @@ namespace SampleTaskApp.UnitOfWork
 
 
         public IEfUserInfoRepository<UserInfo> EfUserInfoRepository { get; }      
-        public IEfDoctorsRepository<Doctors> EfDoctorsRepository { get; }
-        public IEfHospitalsRepository<Hospitals> EfHospitalsRepository { get; }
-        public IEfBedsRepository<Beds> EfBedsRepository { get; }
-        public IEfPatientsRepository<Patients> EfPatientsRepository { get; }
-        public IEfBedsAlotementsRepository<BedsAlotements> EfBedsAlotementsRepository { get; }
-        public IEfNotificationsRepository<Notifications> EfNotificationsRepository { get; }
+        public IEfDoctorsRepository<Doctor> EfDoctorsRepository { get; }
+        public IEfHospitalsRepository<Hospital> EfHospitalsRepository { get; }
+        public IEfBedsRepository<Bed> EfBedsRepository { get; }
+        public IEfPatientsRepository<Patient> EfPatientsRepository { get; }
+        public IEfBedsAlotementsRepository<BedsAlotement> EfBedsAlotementsRepository { get; }
+        public IEfNotificationsRepository<Notification> EfNotificationsRepository { get; }
 
         // Dapper Repositories
         public IDapperUserInfoRepository<UserInfo> DapperUserInfoRepository { get; }
-        public IDapperDoctorsRepository<Doctors> DapperDoctorsRepository { get; }
-        public IDapperHospitalsRepository<Hospitals> DapperHospitalsRepository { get; }
-        public IDapperBedsRepository<Beds> DapperBedsRepository { get; }
-        public IDapperPatientsRepository<Patients> DapperPatientsRepository { get; }
-        public IDapperBedsAlotementsRepository<BedsAlotements> DapperBedsAlotementsRepository { get; }
-        public IDapperNotificationsRepository<Notifications> DapperNotificationsRepository { get; }
+        public IDapperDoctorsRepository<Doctor> DapperDoctorsRepository { get; }
+        public IDapperHospitalsRepository<Hospital> DapperHospitalsRepository { get; }
+        public IDapperBedsRepository<Bed> DapperBedsRepository { get; }
+        public IDapperPatientsRepository<Patient> DapperPatientsRepository { get; }
+        public IDapperBedsAlotementsRepository<BedsAlotement> DapperBedsAlotementsRepository { get; }
+        public IDapperNotificationsRepository<Notification> DapperNotificationsRepository { get; }
 
        
 

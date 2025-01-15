@@ -6,22 +6,22 @@ namespace SampleTaskApp.UnitOfWork
     {
         IEfRepository<T> GetRepository<T>() where T : class;
         IEfUserInfoRepository<UserInfo> EfUserInfoRepository { get; }
-        IEfDoctorsRepository<Doctors> EfDoctorsRepository { get; }
-        IEfHospitalsRepository<Hospitals> EfHospitalsRepository { get; }
-        IEfBedsRepository<Beds> EfBedsRepository { get; }
-        IEfPatientsRepository<Patients> EfPatientsRepository { get; }
-        IEfBedsAlotementsRepository<BedsAlotements> EfBedsAlotementsRepository { get; }
-        IEfNotificationsRepository<Notifications> EfNotificationsRepository { get; }
+        IEfDoctorsRepository<Doctor> EfDoctorsRepository { get; }
+        IEfHospitalsRepository<Hospital> EfHospitalsRepository { get; }
+        IEfBedsRepository<Bed> EfBedsRepository { get; }
+        IEfPatientsRepository<Patient> EfPatientsRepository { get; }
+        IEfBedsAlotementsRepository<BedsAlotement> EfBedsAlotementsRepository { get; }
+        IEfNotificationsRepository<Notification> EfNotificationsRepository { get; }
 
         Task<int> CompleteAsync(); // Commits all changes to the database
         IDapperRepository<T> GetDapperRepository<T>() where T : class;
         IDapperUserInfoRepository<UserInfo> DapperUserInfoRepository { get; }
-        IDapperDoctorsRepository<Doctors> DapperDoctorsRepository { get; }
-        IDapperHospitalsRepository<Hospitals> DapperHospitalsRepository { get; }
-        IDapperBedsRepository<Beds> DapperBedsRepository { get; }
-        IDapperPatientsRepository<Patients> DapperPatientsRepository { get; }
-        IDapperBedsAlotementsRepository<BedsAlotements> DapperBedsAlotementsRepository { get; }
-        IDapperNotificationsRepository<Notifications> DapperNotificationsRepository { get; }
+        IDapperDoctorsRepository<Doctor> DapperDoctorsRepository { get; }
+        IDapperHospitalsRepository<Hospital> DapperHospitalsRepository { get; }
+        IDapperBedsRepository<Bed> DapperBedsRepository { get; }
+        IDapperPatientsRepository<Patient> DapperPatientsRepository { get; }
+        IDapperBedsAlotementsRepository<BedsAlotement> DapperBedsAlotementsRepository { get; }
+        IDapperNotificationsRepository<Notification> DapperNotificationsRepository { get; }
 
         Task<int> DapperCompleteAsync();
     }
